@@ -2,44 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductGallery } from "@/components/ProductGallery";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { formatPrice } from "@/lib/format";
-import { imageUrl } from "@/lib/productImage";
-import { client } from "@/sanity/lib/client";
-import {
-  productBySlugQuery,
-  productSlugsQuery,
-} from "@/sanity/lib/queries";
-import type { Product } from "@/sanity/lib/types";
+import { getAllProducts, getProductBySlug } from "@/data/products";
 
-// Short revalidation so a sold-out card flips to SOLD within a minute even if
-// the on-demand webhook revalidation is missed.
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  try {
-    const slugs = await client.fetch<string[]>(productSlugsQuery);
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+export function generateStaticParams() {
+  return getAllProducts().map((p) => ({ slug: p.slug }));
 }
 
-async function getProduct(slug: string): Promise<Product | null> {
-  try {
-    return await client.fetch(productBySlugQuery, { slug });
-  } catch {
-    return null;
-  }
-}
-
-export async function generateMetadata({
+export function generateMetadata({
   params,
 }: {
   params: { slug: string };
-}): Promise<Metadata> {
-  const product = await getProduct(params.slug);
+}): Metadata {
+  const product = getProductBySlug(params.slug);
   if (!product) return { title: "Product not found" };
   return {
     title: product.title,
@@ -47,17 +24,18 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductPage({
+export default function ProductPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  const product = await getProduct(params.slug);
+  const product = getProductBySlug(params.slug);
   if (!product) notFound();
 
-  const images = (product.images ?? []).map((img) => imageUrl(img, 1000, 1000));
+  const images = product.images.length
+    ? product.images
+    : ["/placeholders/placeholder.png"];
   const isCard = product.category === "card";
-  const firstImage = images[0];
 
   const specs: { label: string; value?: string }[] = isCard
     ? [
@@ -91,7 +69,7 @@ export default async function ProductPage({
         <ProductGallery
           images={images}
           alt={product.title}
-          sold={product.sold}
+          sold={!!product.sold}
         />
 
         <div className="lg:pt-4">
@@ -136,19 +114,14 @@ export default async function ProductPage({
           )}
 
           <div className="mt-10">
-            <AddToCartButton
-              id={product._id}
-              slug={product.slug}
-              title={product.title}
-              price={product.price}
-              currency={product.currency}
-              category={product.category}
-              image={firstImage}
-              sold={product.sold}
+            <WhatsAppButton
+              product={product}
+              className="w-full sm:w-auto"
             />
-            {!product.sold && product.quantity <= 1 && (
+            {!product.sold && (
               <p className="mt-3 text-sm text-cream/50">
-                One of one — only a single piece available.
+                Tap to message us on WhatsApp — we&apos;ll confirm availability
+                and arrange payment &amp; delivery.
               </p>
             )}
           </div>

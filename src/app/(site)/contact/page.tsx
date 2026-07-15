@@ -1,25 +1,18 @@
 import type { Metadata } from "next";
 
-import { client } from "@/sanity/lib/client";
-import { siteSettingsQuery } from "@/sanity/lib/queries";
-import type { SiteSettings } from "@/sanity/lib/types";
+import { site } from "@/data/site";
+import { whatsappLink } from "@/lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch with Tarek Sports Cards.",
 };
 
-export const revalidate = 300;
-
-export default async function ContactPage() {
-  const settings = await client
-    .fetch<SiteSettings | null>(siteSettingsQuery)
-    .catch(() => null);
-
-  const whatsapp = settings?.whatsappNumber?.replace(/[^\d]/g, "");
-  const waLink = whatsapp
-    ? `https://wa.me/${whatsapp}`
-    : "https://wa.me/000000000000"; // placeholder
+export default function ContactPage() {
+  const number = site.whatsappNumber.replace(/[^\d]/g, "");
+  const waLink = whatsappLink(
+    "Hi! I have a question about your posters / sports cards."
+  );
 
   return (
     <div className="container-page max-w-2xl py-16 sm:py-24">
@@ -30,8 +23,8 @@ export default async function ContactPage() {
         Let&apos;s talk collectibles.
       </h1>
       <p className="mt-6 text-cream/70">
-        Questions about a listing, condition, or shipping? Reach out and
-        we&apos;ll get back to you quickly.
+        Questions about a listing, condition, or delivery? Message us on
+        WhatsApp and we&apos;ll get back to you quickly.
       </p>
 
       <div className="mt-10 space-y-4">
@@ -44,7 +37,7 @@ export default async function ContactPage() {
           <div>
             <p className="font-display text-lg text-cream">WhatsApp</p>
             <p className="text-sm text-cream/60">
-              {whatsapp ? `+${whatsapp}` : "Message us directly"}
+              {number ? `+${number}` : "Message us directly"}
             </p>
           </div>
           <span className="text-gold">Chat →</span>
@@ -52,14 +45,14 @@ export default async function ContactPage() {
 
         <div className="rounded-xl border border-white/10 bg-charcoal-900 p-5">
           <p className="font-display text-lg text-cream">Email</p>
-          <p className="text-sm text-cream/60">hello@tareksportscards.com</p>
+          <p className="text-sm text-cream/60">{site.email}</p>
         </div>
 
-        {settings?.socialLinks && settings.socialLinks.length > 0 && (
+        {site.socialLinks.length > 0 && (
           <div className="rounded-xl border border-white/10 bg-charcoal-900 p-5">
             <p className="font-display text-lg text-cream">Social</p>
             <ul className="mt-2 space-y-1 text-sm">
-              {settings.socialLinks.map((s, i) => (
+              {site.socialLinks.map((s, i) => (
                 <li key={i}>
                   <a
                     href={s.url}
@@ -77,7 +70,8 @@ export default async function ContactPage() {
       </div>
 
       <p className="mt-8 text-xs text-cream/40">
-        Replace the WhatsApp number and social links in Studio → Site Settings.
+        Replace the WhatsApp number, email, and social links in{" "}
+        <code className="text-cream/60">data/site.ts</code>.
       </p>
     </div>
   );

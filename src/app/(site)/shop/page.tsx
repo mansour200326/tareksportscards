@@ -2,24 +2,19 @@ import type { Metadata } from "next";
 
 import { ProductCard } from "@/components/ProductCard";
 import { ShopControls } from "@/components/ShopControls";
-import { client } from "@/sanity/lib/client";
-import { allProductsQuery } from "@/sanity/lib/queries";
-import type { Product } from "@/sanity/lib/types";
+import { getAllProducts } from "@/data/products";
 
 export const metadata: Metadata = {
   title: "Shop",
   description: "Browse all posters and sports cards.",
 };
 
-// Always render fresh so SOLD state and new listings are current.
-export const dynamic = "force-dynamic";
-
 type SearchParams = {
   category?: string;
   sort?: string;
 };
 
-export default async function ShopPage({
+export default function ShopPage({
   searchParams,
 }: {
   searchParams: SearchParams;
@@ -30,9 +25,7 @@ export default async function ShopPage({
       : "all";
   const sort = searchParams.sort ?? "newest";
 
-  const all = await client.fetch<Product[]>(allProductsQuery).catch(() => []);
-
-  let products = all;
+  let products = getAllProducts();
   if (category !== "all") {
     products = products.filter((p) => p.category === category);
   }
@@ -40,8 +33,7 @@ export default async function ShopPage({
   products = [...products].sort((a, b) => {
     if (sort === "price-asc") return a.price - b.price;
     if (sort === "price-desc") return b.price - a.price;
-    // newest (default): keep query order (already _createdAt desc)
-    return 0;
+    return 0; // newest: keep catalog order
   });
 
   return (
@@ -67,7 +59,7 @@ export default async function ShopPage({
       ) : (
         <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
           {products.map((p) => (
-            <ProductCard key={p._id} product={p} />
+            <ProductCard key={p.id} product={p} />
           ))}
         </div>
       )}

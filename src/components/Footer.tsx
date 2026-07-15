@@ -1,17 +1,16 @@
 import Link from "next/link";
 
-import type { SiteSettings } from "@/sanity/lib/types";
+import { site } from "@/data/site";
 
-export function Footer({ settings }: { settings: SiteSettings | null }) {
-  const siteName = settings?.siteName || "Tarek Sports Cards";
+export function Footer() {
   const year = 2026;
-  const socials = settings?.socialLinks ?? [];
+  const socials = site.socialLinks ?? [];
 
   return (
     <footer className="border-t border-white/10 bg-charcoal-950">
       <div className="container-page grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2 lg:col-span-1">
-          <p className="font-display text-lg text-cream">{siteName}</p>
+          <p className="font-display text-lg text-cream">{site.name}</p>
           <p className="mt-3 max-w-xs text-sm text-cream/60">
             Premium posters and one-of-one collectible sports cards.
           </p>
@@ -83,7 +82,7 @@ export function Footer({ settings }: { settings: SiteSettings | null }) {
 
       <div className="border-t border-white/5 py-6">
         <p className="container-page text-xs text-cream/40">
-          © {year} {siteName}. All rights reserved.
+          © {year} {site.name}. All rights reserved.
         </p>
       </div>
     </footer>

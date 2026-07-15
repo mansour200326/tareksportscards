@@ -19,14 +19,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# local env files (this static site needs none, but ignore them just in case)
 .env
 .env.local
 .env*.local
-
-# sanity
-/dist
-.sanity/
 
 # typescript
 *.tsbuildinfo

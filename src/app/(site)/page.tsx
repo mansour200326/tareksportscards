@@ -1,27 +1,11 @@
 import Link from "next/link";
 
 import { ProductCard } from "@/components/ProductCard";
-import { client } from "@/sanity/lib/client";
-import {
-  featuredProductsQuery,
-  siteSettingsQuery,
-} from "@/sanity/lib/queries";
-import type { Product, SiteSettings } from "@/sanity/lib/types";
+import { getFeaturedProducts } from "@/data/products";
+import { site } from "@/data/site";
 
-// Short revalidation window so SOLD state never lingers.
-export const revalidate = 60;
-
-export default async function HomePage() {
-  const [featured, settings] = await Promise.all([
-    client.fetch<Product[]>(featuredProductsQuery).catch(() => []),
-    client.fetch<SiteSettings | null>(siteSettingsQuery).catch(() => null),
-  ]);
-
-  const heading =
-    settings?.heroHeading || "Rare finds for serious collectors.";
-  const text =
-    settings?.heroText ||
-    "A curated shelf of premium posters and one-of-one sports cards. When it's gone, it's gone.";
+export default function HomePage() {
+  const featured = getFeaturedProducts(4);
 
   return (
     <div>
@@ -34,9 +18,11 @@ export default async function HomePage() {
               Posters · Sports Cards
             </p>
             <h1 className="font-display text-4xl leading-tight text-cream sm:text-5xl lg:text-6xl">
-              {heading}
+              {site.heroHeading}
             </h1>
-            <p className="mt-6 max-w-md text-lg text-cream/70">{text}</p>
+            <p className="mt-6 max-w-md text-lg text-cream/70">
+              {site.heroText}
+            </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link href="/shop" className="btn-gold">
                 Shop the collection
@@ -49,13 +35,8 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-2 gap-4">
             {featured.slice(0, 4).map((p) => (
-              <ProductCard key={p._id} product={p} />
+              <ProductCard key={p.id} product={p} />
             ))}
-            {featured.length === 0 && (
-              <div className="col-span-2 rounded-xl border border-dashed border-white/15 p-10 text-center text-cream/40">
-                Add products in the Studio to see them here.
-              </div>
-            )}
           </div>
         </div>
       </section>
@@ -87,7 +68,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
             {featured.map((p) => (
-              <ProductCard key={p._id} product={p} />
+              <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </section>

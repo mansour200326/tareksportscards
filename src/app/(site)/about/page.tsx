@@ -23,23 +23,23 @@ export default function AboutPage() {
         </p>
         <p>
           Sports cards are, more often than not, one-of-one. When a card is
-          gone, it&apos;s gone. That&apos;s why our stock updates in real time:
-          the moment a piece sells, it&apos;s marked{" "}
-          <span className="text-gold">SOLD</span> across the whole site so you
-          always see what&apos;s genuinely available.
+          gone, it&apos;s gone — pieces that sell are marked{" "}
+          <span className="text-gold">SOLD</span> so you always see what&apos;s
+          genuinely available.
         </p>
         <p>
-          Whether you&apos;re framing a statement poster or chasing a graded
-          gem for your PC, we want the experience to feel like walking into a
-          proper memorabilia shop — considered, premium, and honest.
+          Found something you love? Tap{" "}
+          <span className="text-gold">Buy via WhatsApp</span> and message us
+          directly — we&apos;ll confirm the item, answer any questions, and
+          arrange payment and delivery personally.
         </p>
       </div>
 
       <div className="mt-12 grid gap-6 sm:grid-cols-3">
         {[
           { k: "Curated", v: "Every item hand-selected." },
-          { k: "One-of-one", v: "Live stock, no overselling." },
-          { k: "Secure", v: "Payments handled by Stripe." },
+          { k: "One-of-one", v: "Unique pieces, marked SOLD when gone." },
+          { k: "Personal", v: "Order directly over WhatsApp." },
         ].map((f) => (
           <div
             key={f.k}

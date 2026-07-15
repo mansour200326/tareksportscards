@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useCart } from "@/lib/cart";
-import type { SiteSettings } from "@/sanity/lib/types";
+import { site } from "@/data/site";
 
 const NAV = [
   { href: "/shop", label: "Shop" },
@@ -14,17 +13,15 @@ const NAV = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function Header({ settings }: { settings: SiteSettings | null }) {
-  const { count, isReady } = useCart();
+export function Header() {
   const pathname = usePathname();
-  const siteName = settings?.siteName || "Tarek Sports Cards";
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-charcoal-950/85 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2">
           <span className="font-display text-lg font-semibold tracking-wide text-cream sm:text-xl">
-            {siteName}
+            {site.name}
           </span>
         </Link>
 
@@ -45,33 +42,10 @@ export function Header({ settings }: { settings: SiteSettings | null }) {
         </nav>
 
         <Link
-          href="/cart"
-          className="relative inline-flex items-center gap-2 text-sm text-cream/90 hover:text-gold"
-          aria-label="Cart"
+          href="/shop"
+          className="btn-gold !px-5 !py-2 text-xs sm:!px-6"
         >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            aria-hidden
-          >
-            <path
-              d="M2.5 3h2l2.4 12.4a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.2L21 7H6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <circle cx="9" cy="20" r="1.3" />
-            <circle cx="18" cy="20" r="1.3" />
-          </svg>
-          <span className="hidden sm:inline">Cart</span>
-          {isReady && count > 0 && (
-            <span className="absolute -right-3 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[11px] font-bold text-charcoal-950">
-              {count}
-            </span>
-          )}
+          Shop now
         </Link>
       </div>
 
