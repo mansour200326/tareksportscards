@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-charcoal-950 text-cream antialiased;
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-8xl px-5 sm:px-8;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium uppercase tracking-wider transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-gold {
+    @apply btn bg-gold text-charcoal-950 hover:bg-gold-light;
+  }
+
+  .btn-outline {
+    @apply btn border border-white/20 text-cream hover:border-gold hover:text-gold;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider;
+  }
+
+  .badge-gold {
+    @apply badge bg-gold/15 text-gold ring-1 ring-inset ring-gold/30;
+  }
+
+  .badge-sold {
+    @apply badge bg-red-600 text-white;
+  }
+}
